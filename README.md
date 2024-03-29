@@ -31,4 +31,4 @@ A job can be submitted to the Slurm scheduler by running the following command f
 
 
 ## References
-Based on information made available by [Gurobi](https://support.gurobi.com/hc/en-us/articles/4408438050705-How-do-I-create-a-cluster-of-distributed-workers-as-an-academic) and the [University of Luxembourg](https://ulhpc-tutorials.readthedocs.io/en/latest/maths/Cplex-Gurobi/).
+Based on information made available by [Gurobi](https://www.gurobi.com/wp-content/plugins/hd_documentations/documentation/11.0/remoteservices.pdf) and the [University of Luxembourg](https://ulhpc-tutorials.readthedocs.io/en/latest/maths/Cplex-Gurobi/).
