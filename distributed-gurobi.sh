@@ -24,7 +24,6 @@ MAIN_NODE=$(scontrol show hostname ${SLURM_NODELIST} | head -n 1)
 module load gurobi/latest
 
 if [[ "$(hostname)" = ${MAIN_NODE} ]]; then
-    
     # Initialize the worker
     echo Starting server on $(hostname)
     cd data/${SLURM_JOBID}
@@ -39,7 +38,7 @@ if [[ "$(hostname)" = ${MAIN_NODE} ]]; then
     sleep 30
     cd ../../../
 
-    # And call gurobi_cl (adjust further arguments, where necessary)
+    # Call gurobi_cl (adjust further arguments, where necessary)
     gurobi_cl Threads=${SLURM_CPUS_PER_TASK} LogFile="grb_${SLURM_JOBID}.log" ResultFile="sol_${SLURM_JOBID}.sol" Workerpool=${MAIN_NODE}:${MAIN_PORT} DistributedMIPJobs=$((SLURM_NNODES)) ${MPS_FILE}
 else
     # Wait for the main server to be awake
