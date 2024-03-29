@@ -2,6 +2,8 @@
 
 A simple batch script to make [Distributed Optimization with Gurobi](https://www.gurobi.com/solutions/distributed-optimization/) with an [academic license](https://support.gurobi.com/hc/en-us/articles/4408438050705-How-do-I-create-a-cluster-of-distributed-workers-as-an-academic) possible on a compute cluster running [Slurm](https://slurm.schedmd.com/documentation.html).
 
+Tested with Gurobi Optimizer 11.0 on a Rocky Linux 8.9 Cluster running Slurm 23.11.5.
+
 ## Getting Started
 
 The script assumes the following project structure:
@@ -27,6 +29,7 @@ The file `distributed-gurobi.sh` most likely requires slight adjustments, relati
 A job can be submitted to the Slurm scheduler by running the following command from the `project` folder:
 
 ```sbatch distributed_gurobi.sbatch instances/a.mps.gz```
+
 
 
 
