@@ -29,17 +29,20 @@ if [[ "$(hostname)" = ${MAIN_NODE} ]]; then
     cd data/${SLURM_JOBID}
     mkdir $(hostname)
     cd $(hostname)
-    grb_rs init    
+    grb_rs init
 
     # Start the main server (first worker)
     grb_rs --worker --port ${MAIN_PORT} &
 
-    # Wait for all other workers to wake up and move back to the working directory
-    sleep 30
+    # Wait for all other workers to wake up 
+    sleep 15
+    # Move from data/${SLURM_JOBID}/$(hostname) to the working directory
     cd ../../../
 
     # Call gurobi_cl (adjust further arguments, where necessary)
-    gurobi_cl Threads=${SLURM_CPUS_PER_TASK} LogFile="grb_${SLURM_JOBID}.log" ResultFile="sol_${SLURM_JOBID}.sol" Workerpool=${MAIN_NODE}:${MAIN_PORT} DistributedMIPJobs=$((SLURM_NNODES)) ${MPS_FILE}
+    gurobi_cl LogFile="grb_${SLURM_JOBID}.log" ResultFile="sol_${SLURM_JOBID}.sol" TimeLimit=60 \
+    Threads=${SLURM_CPUS_PER_TASK} Workerpool=${MAIN_NODE}:${MAIN_PORT} DistributedMIPJobs=$((SLURM_NNODES)) \
+    ${MPS_FILE}
 else
     # Wait for the main server to be awake
     sleep 5
@@ -51,6 +54,7 @@ else
     cd $(hostname)
     grb_rs init
 
+    # Start the worker
     grb_rs --worker --port ${SUB_PORT} --join ${MAIN_NODE}:${MAIN_PORT} &
     wait
 fi
