@@ -10,7 +10,7 @@ Tested with Gurobi Optimizer 11.0 on a Rocky Linux 8.9 Cluster running Slurm 23.
 Ensure that the `project` adheres to the following structure:
 ```
 project
-├── distributed_gurobi.sh
+├── distributed-gurobi.sh
 ├── data
 │   │── ...
 ├── instance.mps.gz
@@ -28,7 +28,7 @@ This relates to:
 ### Job Submission
 A job can be submitted to the Slurm scheduler by running the following command from the `project` folder:
 
-```sbatch distributed_gurobi.sbatch instance.mps.gz```
+```sbatch distributed-gurobi.sbatch instance.mps.gz```
 
 
 
