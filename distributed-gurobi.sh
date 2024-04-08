@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --constraint="EPYC_7262"
 #SBATCH --mem=32G
-#SBATCH --time=0:05:00
+#SBATCH --time=0:10:00
 #SBATCH -o %x-%j.out
 #SBATCH -e %x-%j.err
 
@@ -32,7 +32,7 @@ if [[ "$(hostname)" = ${MAIN_NODE} ]]; then
     grb_rs init
 
     # Start the main server (first worker)
-    grb_rs --worker --port ${MAIN_PORT} &
+    grb_rs --worker --port ${MAIN_PORT} --idle-shutdown 5 &
 
     # Wait for all other workers to wake up 
     sleep 15
@@ -43,6 +43,9 @@ if [[ "$(hostname)" = ${MAIN_NODE} ]]; then
     gurobi_cl LogFile="grb_${SLURM_JOBID}.log" ResultFile="sol_${SLURM_JOBID}.sol" TimeLimit=60 \
     Threads=${SLURM_CPUS_PER_TASK} Workerpool=${MAIN_NODE}:${MAIN_PORT} DistributedMIPJobs=$((SLURM_NNODES)) \
     ${MPS_FILE}
+
+    # Wait for the server to shutdown after 5 minutes idle time
+    wait
 else
     # Wait for the main server to be awake
     sleep 5
@@ -55,7 +58,9 @@ else
     grb_rs init
 
     # Start the worker
-    grb_rs --worker --port ${SUB_PORT} --join ${MAIN_NODE}:${MAIN_PORT} &
+    grb_rs --worker --port ${SUB_PORT} --idle-shutdown 4 --join ${MAIN_NODE}:${MAIN_PORT} &
+
+    # Wait for the worker to shutdown after 4 minutes idle time
     wait
 fi
 EOF
@@ -64,10 +69,5 @@ EOF
 chmod +x ${GUROBI_INNER_LAUNCHER}
 # Create a data directory for the current job
 mkdir data/${SLURM_JOBID}
-# Launch processes and wait until a solution file is created by the gurobi_cl process
-srun ${GUROBI_INNER_LAUNCHER} &
-while [[ ! -e "sol_${SLURM_JOBID}.sol" ]]; do
-    sleep 5
-done
-# Clean up
-rm ${GUROBI_INNER_LAUNCHER}
+# Launch processes
+srun ${GUROBI_INNER_LAUNCHER}
