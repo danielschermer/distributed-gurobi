@@ -21,14 +21,18 @@ project
 The file `distributed-gurobi.sh` must be adjusted to match the cluster's specifications.
 This relates to:
 1. The `#SBATCH` header,
-2. the ports `MAIN_PORT` and `SUB_PORT`.
-3. If `module load gurobi/latest` is not applicable, ensure that `grb_rs` and `gurobi_cl` are found in `$PATH` and the proper Gurobi license available.
+2. the ports `MAIN_PORT` and `SUB_PORT`,
+3. the `TimeLimit` passed to `gurobi_cl`.
+4. If `module load gurobi/latest` is not applicable, ensure that `grb_rs` and `gurobi_cl` are found in `$PATH` and the proper Gurobi license available.
+
 
 
 ### Job Submission
 A job can be submitted to the Slurm scheduler by running the following command from the `project` folder:
 
-```sbatch distributed-gurobi.sbatch instance.mps.gz```
+```
+sbatch distributed-gurobi.sbatch instance.mps.gz
+```
 
 
 
