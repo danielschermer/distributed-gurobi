@@ -22,8 +22,11 @@ The file `distributed-gurobi.sh` must be adjusted to match the cluster's specifi
 This relates to:
 1. The `#SBATCH` header,
 2. the ports `MAIN_PORT` and `SUB_PORT`,
-3. the `TimeLimit` passed to `gurobi_cl`.
-4. If `module load gurobi/latest` is not applicable, ensure that `grb_rs` and `gurobi_cl` are found in `$PATH` and the proper Gurobi license available.
+3. the `GUROBI_TIME_LIMIT`, which must match the requested resources (net of approximately 5 minutes to account for a graceful startup and shutdown).
+4. When using Gurobi:
+    * If `module load gurobi/latest` is not applicable, ensure that `grb_rs` and `gurobi_cl` are found in `$PATH`.
+    * Alternatively, the file `main.py` can be called and adjusted, if necessary.
+    * In any case, the proper Gurobi license must be available.
 
 
 
