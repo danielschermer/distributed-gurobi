@@ -10,7 +10,10 @@ if __name__ == "__main__":
         "-f", "--file", help="Path to the problem instance.", default=None, type=str
     )
     parser.add_argument(
-        "-t", "--timelimit", help="Limits the time (in seconds).", default=float("inf"), type=int
+        "-i", "--id", help="Slurm job ID used for solution and log file names.", default=0, type=int
+    )
+    parser.add_argument(
+        "-t", "--timelimit", help="Limits the time (in seconds).", default=float("inf"), type=float
     )
     parser.add_argument(
         "-w", "--workerpool", help="Specifies the Remote Services cluster.", default="", type=str
@@ -26,14 +29,13 @@ if __name__ == "__main__":
     # Load the model (or build one here)
     m = gp.read(args.file)
 
-    # Adjust the required parameters
+    # Adjust the necessary Gurobi parameters
+    m.setParam("LogFile", f"{args.id}.log")
     m.setParam("TimeLimit", args.timelimit)
     m.setParam("Threads", args.threads)
     m.setParam("Workerpool", args.workerpool)
     m.setParam("DistributedMIPJobs", args.jobs)
 
-    # Optimize the model
+    # Optimize the model and save the solution
     m.optimize()
-
-    # Store the solution
-    m.write("model.sol")
+    m.write(f"{args.id}.sol")

@@ -22,7 +22,8 @@ MAIN_NODE=$(scontrol show hostname ${SLURM_NODELIST} | head -n 1)
 
 # Load the Gurobi module (gurobi_cl and grb_rs must be in $PATH)!
 module load gurobi/latest
-module load python/3.11
+# Alternatively, when calling main.py, grb_rs must be in $PATH and the gurobipy Python module installed
+# module load python/3.11
 
 if [[ "$(hostname)" = ${MAIN_NODE} ]]; then
     # Initialize the worker
@@ -41,7 +42,7 @@ if [[ "$(hostname)" = ${MAIN_NODE} ]]; then
     cd ../../../
 
     # Either call a helper script ...
-    # python3 main.py -f ${MPS_FILE} -t ${GUROBI_TIME_LIMIT} -w ${MAIN_NODE}:${MAIN_PORT} -n ${SLURM_CPUS_PER_TASK} -j ${SLURM_NNODES}
+    # python3 main.py -f ${MPS_FILE} -i ${SLURM_JOBID} -t ${GUROBI_TIME_LIMIT} -w ${MAIN_NODE}:${MAIN_PORT} -n ${SLURM_CPUS_PER_TASK} -j ${SLURM_NNODES}
 
     # ... or directly call gurobi_cl
     gurobi_cl LogFile="grb_${SLURM_JOBID}.log" ResultFile="sol_${SLURM_JOBID}.sol" TimeLimit=${GUROBI_TIME_LIMIT} \
